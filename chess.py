@@ -156,122 +156,210 @@ class TicTacToeEtat:
                             a0=self.tableau[6, 0], b0=self.tableau[6, 1], c0=self.tableau[6, 2], d0=self.tableau[6, 3], e0=self.tableau[6, 4], f0=self.tableau[6, 5], g0=self.tableau[6, 6], h0=self.tableau[6, 7],
                             a0=self.tableau[7, 0], b0=self.tableau[7, 1], c0=self.tableau[7, 2], d0=self.tableau[7, 3], e0=self.tableau[7, 4], f0=self.tableau[7, 5], g0=self.tableau[7, 6], h0=self.tableau[7, 7]
                             )
+#merde les pieces vont manger leur allier dans le cas acutelle TODO
+def pion(self,player):
+    if player.islower():
+        x,y = down(position)
+        if y not None:
+            if self.tableau[x][y] == '-':
+                #pion avence de 1
+                self.tableau[position[0]][position[1]] = '-'
+                self.tableau[x][y] = 'p'
+                #action 1 fait
+            x,y = diagonalRightDown(position)
+            if self.tableau[x][y].isupper():
+                #pion a manger a droite
+                self.tableau[position[0]][position[1]] = '-'
+                self.tableau[x][y] = 'p'
+                #action 2 
+            x,y = diagonalLeftDown(position)
+            if self.tableau[x][y].isupper():
+                #pion a manger a droite
+                self.tableau[position[0]][position[1]] = '-'
+                self.tableau[x][y] = 'p'
+                #action 2 
+            if position[y] == 1: 
+                #avence de 2 au premier tour
+                x,y = down(down(position))
+                self.tableau[position[0]][position[1]] = '-'
+                self.tableau[x][y] = 'p'
+                #action 3 
+            #je code pas l'action du pion qui coupe vrm trop compliquer
+    else: 
+        x,y = top(position)
+        if y not None:
+            if self.tableau[x][y] == '-':
+                #pion avence de 1
+                self.tableau[position[0]][position[1]] = '-'
+                self.tableau[x][y] = 'P'
+                #action 1 fait
+            x,y = diagonalRighttop(position)
+            if self.tableau[x][y].isupper():
+                #pion a manger a droite
+                self.tableau[position[0]][position[1]] = '-'
+                self.tableau[x][y] = 'P'
+                #action 2 
+            x,y = diagonalLefttop(position)
+            if self.tableau[x][y].isupper():
+                #pion a manger a droite
+                self.tableau[position[0]][position[1]] = '-'
+                self.tableau[x][y] = 'P'
+                #action 2 
+            if position[y] == 1: 
+                #avence de 2 au premier tour
+                x,y = top(top(position))
+                self.tableau[position[0]][position[1]] = '-'
+                self.tableau[x][y] = 'P'
+                #action 3 
 
+def rock(self,player):      
+    moves = [top,down,left,right]
+    for m in moves:
+        p = position  
+        while True:
+            x,y = m(p)
+            if y is None or x is None:
+                break
+            #check pour ne pas canibaliser
+            if player.islower():
+                if self.tableau[x][y].islower():
+                    break
+            else:
+                if self.tableau[x][y].isupper():
+                    break    
+
+            xyCase = tableau[x][y]
+            self.tableau[p[0]][p[1]] = '-'
+            self.tableau[x][y] = player
+            p = x,y
+            # a avencer ou manger doit adder a la config
+            
+            #check pour savoir si on a manger
+            if player.islower():
+                if xyCase:
+                    break
+            else:
+                if xyCase:
+                    break  
+
+def bishop(self,player):    
+    moves = [diagonalLeftDown,diagonalRightDown,diagonalRightTop,diagonalLeftTop]
+    for m in moves:
+        p = position
+        while True:
+            x,y = m(p)
+            if y is None or x is None:
+                break
+
+            #check pour ne pas canibaliser
+            if player.islower():
+                if self.tableau[x][y].islower():
+                    break
+            else:
+                if self.tableau[x][y].isupper():
+                    break    
+
+            xyCase = tableau[x][y]
+            self.tableau[p[0]][p[1]] = '-'
+            self.tableau[x][y] = player
+            p = x,y
+            # a avencer ou manger doit adder a la config
+            
+            #check pour savoir si on a manger
+            if player.islower():
+                if xyCase:
+                    break
+            else:
+                if xyCase:
+                    break  
+
+def knight(self,player):
+    moves = []
+    moves.append(top(top(left())))
+    moves.append(top(top(right())))
+    moves.append(down(down(left())))
+    moves.append(down(down(right())))
+    moves.append(left(left(top())))
+    moves.append(left(left(down())))
+    moves.append(right(right(top())))
+    moves.append(right(right(down())))
+
+    for m in moves:
+        x,y = m(position)
+        if x not None and y not None:
+            #check pour ne pas canibaliser
+            if player.islower():
+                if self.tableau[x][y].islower():
+                    break
+            else:
+                if self.tableau[x][y].isupper():
+                    break    
+                    #mange ou deplace
+            self.tableau[p[0]][p[1]] = '-'
+            self.tableau[x][y] = player
+
+def queen(self,player):
+    moves = [diagonalLeftDown,diagonalRightDown,diagonalRightTop,diagonalLeftTop,left,right,top,down]
+    for m in moves:
+        p = position  
+        while True:
+            x,y = m(p)
+            if y is None or x is None:
+                break
+            if player.islower():
+                if self.tableau[x][y].islower():
+                    break
+            else:
+                if self.tableau[x][y].isupper():
+                    break    
+            #mange ou deplace    
+            xyCase = tableau[x][y]
+            self.tableau[p[0]][p[1]] = '-'
+            self.tableau[x][y] = 'b'
+            p = x,y
+            #a avencer ou manger doit adder a la config
+            if player.islower():
+                if xyCase:
+                    break
+            else:
+                if xyCase:
+                    break  
+
+def king(self,player):
+    moves = [diagonalLeftDown,diagonalRightDown,diagonalRightTop,diagonalLeftTop,left,right,top,down]
+    for m in moves:
+        x,y = m(position)
+        if x not None and y not None:
+            if player.islower():
+                if self.tableau[x][y].islower():
+                    break
+            else:
+                if self.tableau[x][y].isupper():
+                    break   
+            #faut verifier que rien sur le board peut attaquer cette case la 
+            #TODO
+            #mange ou deplace
+            self.tableau[p[0]][p[1]] = '-'
+            self.tableau[x][y] = 'w'
+    #manque le rock
+    #TODO
 
 
 def mouvement(self, position, type):
     for i in t:
-        if t == 'p':
-            x,y = down(position)
-            if y not None:
-                if self.tableau[x][y] == '-':
-                    #pion avence de 1
-                    self.tableau[position[0]][position[1]] = '-'
-                    self.tableau[x][y] = 'p'
-                    #action 1 fait
-                x,y = diagonalRightDown(position)
-                if self.tableau[x][y].isupper():
-                    #pion a manger a droite
-                    self.tableau[position[0]][position[1]] = '-'
-                    self.tableau[x][y] = 'p'
-                    #action 2 
-                x,y = diagonalLeftDown(position)
-                if self.tableau[x][y].isupper():
-                    #pion a manger a droite
-                    self.tableau[position[0]][position[1]] = '-'
-                    self.tableau[x][y] = 'p'
-                    #action 2 
-                if position[y] == 1: 
-                    #avence de 2 au premier tour
-                    x,y = down(down(position))
-                    self.tableau[position[0]][position[1]] = '-'
-                    self.tableau[x][y] = 'p'
-                    #action 3 
-                #je code pas l'action du pion qui coupe vrm trop compliquer
+        if t == 'p' or t == 'P':
+            self.pion(t)
+        if t == 'r' or t == 'R':
+            self.rock(t)
+        if t == 'b' or t == 'B':
+            self.bishop(t)
+        if t == 'k' or t == 'T':
+            self.knight(t)
+        if t == 'q' or t == 'Q':
+            self.queen(t)
 
-        if t == 'r':
-            moves = [top,down,left,right]
-            for m in moves:
-                p = position  
-                while True:
-                    x,y = m(p)
-                    if y is None:
-                        break
-                    self.tableau[p[0]][p[1]] = '-'
-                    self.tableau[x][y] = 'r'
-                    p = x,y
-                    # a avencer ou manger doit adder a la config
-                    if self.tableau[x][y].isupper():
-                        #a manger break out 
-                        break
-        if t == 'b'
-            moves = [diagonalLeftDown,diagonalRightDown,diagonalRightTop,diagonalLeftTop]
-            for m in moves:
-                p = position  
-                while True:
-                    x,y = m(p)
-                    if y is None:
-                        break
-                    self.tableau[p[0]][p[1]] = '-'
-                    self.tableau[x][y] = 'b'
-                    p = x,y
-                    # a avencer ou manger doit adder a la config
-                    if self.tableau[x][y].isupper():
-                        #a manger break out 
-                        break
-        if t == 'k':
-            moves = []
-            moves.append(top(top(left())))
-            moves.append(top(top(right())))
-            moves.append(down(down(left())))
-            moves.append(down(down(right())))
-            moves.append(left(left(top())))
-            moves.append(left(left(down())))
-            moves.append(right(right(top())))
-            moves.append(right(right(down())))
-
-            for m in moves:
-                x,y = m(position)
-                if x not None and y not None:
-                    #mange ou deplace
-                    self.tableau[p[0]][p[1]] = '-'
-                    self.tableau[x][y] = 'k'
-
-        if t == 'q':
-            moves = [diagonalLeftDown,diagonalRightDown,diagonalRightTop,diagonalLeftTop,left,right,top,down]
-            for m in moves:
-                p = position  
-                while True:
-                    x,y = m(p)
-                    if y is None:
-                        break
-                    self.tableau[p[0]][p[1]] = '-'
-                    self.tableau[x][y] = 'b'
-                    p = x,y
-                    # a avencer ou manger doit adder a la config
-                    if self.tableau[x][y].isupper():
-                        #a manger break out 
-                        break
-
-        if t == 'w':
-            moves = [diagonalLeftDown,diagonalRightDown,diagonalRightTop,diagonalLeftTop,left,right,top,down]
-            for m in moves:
-                x,y = m(position)
-                if x not None and y not None:
-                    #faut verifier que rien sur le board peut attaquer cette case la 
-                    #TODO
-                    #mange ou deplace
-                    self.tableau[p[0]][p[1]] = '-'
-                    self.tableau[x][y] = 'w'
-            #manque le rock
-            #TODO
-
-
-
-
-
-
-
+        if t == 'w' or t == 'T':
+            king(t)
 
 
 def chess_transitions(etat):
