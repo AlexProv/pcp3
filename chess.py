@@ -4,6 +4,7 @@ import argparse
 import random
 import copy
 import numpy as np
+import chess
 
 from string import Template
 
@@ -90,7 +91,7 @@ class Jeu:
                 self.afficher(self.resultat_partie())
                 break
 
-class TicTacToeEtat:
+class ChessEtat:
 
 #king = W for win 
     def __init__(self):
@@ -461,4 +462,41 @@ def buildArgsParser():
                    help='activer le mode verbose')
 
     return p
+
+
+    #####
+    # Execution en tant que script
+    ###
+    def main():
+        parser = buildArgsParser()
+        args = parser.parse_args()
+        player1 = args.player1
+        player2 = args.player2
+        is_verbose = args.is_verbose
+
+        if player1 == "humain" or player2 == "humain":
+            is_verbose = True  # Afficher les grilles si c'est un joueur humain.
+
+        if player1 not in ['aleatoire', 'humain'] and not player1.endswith('.py'):
+            parser.error('Joueur 1 doit être [aleatoire, humain, solution_tictactoe.py]')
+
+        if player2 not in ['aleatoire', 'humain'] and not player2.endswith('.py'):
+            parser.error('Joueur 2 doit être [aleatoire, humain, solution_tictactoe.py]')
+
+        if player1.endswith('.py') and not os.path.isfile(player1):
+            parser.error("-joueur1 '{}' must be an existing file!".format(os.path.abspath(player1)))
+
+        if player2.endswith('.py') and not os.path.isfile(player2):
+            parser.error("-joueur2 '{}' must be an existing file!".format(os.path.abspath(player2)))
+
+        # Jouer une partie de Tic-Tac-Toe
+
+        chess = Jeu(ChessEtat(), chess_but, chess_transitions, verbose=is_verbose)
+        chess.jouer_partie(player_factory(player1), player_factory(player2))
+
+
+
+    if __name__ == "__main__":
+        main()
+
 
