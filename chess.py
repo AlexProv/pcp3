@@ -195,17 +195,41 @@ def pion(self,player):
                 self.tableau[x][y] = 'P'
                 #action 1 fait
             x,y = diagonalRighttop(position)
-            if self.tableau[x][y].isupper():
-                #pion a manger a droite
-                self.tableau[position[0]][position[1]] = '-'
-                self.tableau[x][y] = 'P'
-                #action 2 
+            if player.islower():
+                if self.tableau[x][y].isupper():
+                    #pion a manger a droite
+                    self.tableau[position[0]][position[1]] = '-'
+                    self.tableau[x][y] = 'P'
+                    #action 2
+                else:
+                    break
+            else:
+                if self.tableau[x][y].islower():
+                    #pion a manger a droite
+                    self.tableau[position[0]][position[1]] = '-'
+                    self.tableau[x][y] = 'P'
+                    #action 2
+                else:
+                    break
+
             x,y = diagonalLefttop(position)
-            if self.tableau[x][y].isupper():
-                #pion a manger a droite
-                self.tableau[position[0]][position[1]] = '-'
-                self.tableau[x][y] = 'P'
-                #action 2 
+            if player.islower():
+                if self.tableau[x][y].isupper():
+                    #pion a manger a droite
+                    self.tableau[position[0]][position[1]] = '-'
+                    self.tableau[x][y] = 'P'
+                    #action 2 
+                else:
+                    break
+            else:
+                if self.tableau[x][y].islower():
+                    #pion a manger a droite
+                    self.tableau[position[0]][position[1]] = '-'
+                    self.tableau[x][y] = 'P'
+                    #action 2 
+                else:
+                    break
+
             if position[y] == 1: 
                 #avence de 2 au premier tour
                 x,y = top(top(position))
