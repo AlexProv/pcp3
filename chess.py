@@ -7,6 +7,7 @@ import numpy as np
 import chess
 
 from string import Template
+from moves import get_attack_moves_for_piece
 
 def left(a):
     x,y = a
@@ -355,19 +356,37 @@ def king(self,player):
     for m in moves:
         x,y = m(position)
         if x not None and y not None:
+            # Make sure king can actually move there
+            if not king_is_checked(x, y, player):
+                return False
+
             if player.islower():
                 if self.tableau[x][y].islower():
                     break
             else:
                 if self.tableau[x][y].isupper():
-                    break   
+                    break
+
             #faut verifier que rien sur le board peut attaquer cette case la 
+
             #TODO
             #mange ou deplace
             self.tableau[p[0]][p[1]] = '-'
             self.tableau[x][y] = 'w'
     #manque le rock
     #TODO
+
+
+#verify if king is checked at pos x, y
+def king_is_checked(x,y, player):
+    for y in self.tableau:
+        for x in y:
+            # if theres a piece there check if it can attack the king
+            if (player.islower() and self.tableau[y][x].isupper()) or (player.isupper() and self.tableau[y][x].islower())
+                    attacked_places = get_attack_moves_for_piece(tableau[y][x], x, y)
+                    if (x,y) in attacked_places:
+                        return True
+    return False
 
 
 def mouvement(self, position, type):
@@ -382,7 +401,6 @@ def mouvement(self, position, type):
             self.knight(t)
         if t == 'q' or t == 'Q':
             self.queen(t)
-
         if t == 'w' or t == 'T':
             king(t)
 
@@ -468,7 +486,7 @@ def player_factory(player):
     return None
 
 #TODO pas encore modifier
-DESCRIPTION = "Lancer une partie de Tic-Tac-Toe."
+DESCRIPTION = "Lancer une partie d'echecs"
 
 #TODO pas encore modifier
 def buildArgsParser():
@@ -517,6 +535,7 @@ def buildArgsParser():
 
         chess = Jeu(ChessEtat(), chess_but, chess_transitions, verbose=is_verbose)
         chess.jouer_partie(player_factory(player1), player_factory(player2))
+
 
 
 
