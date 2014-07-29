@@ -5,6 +5,7 @@ import random
 import copy
 import numpy as np
 import chess
+import copy
 
 from string import Template
 from moves import get_attack_moves_for_piece
@@ -42,6 +43,14 @@ def diagonalLeftDown(a):
     return down(left(a))
 def diagonalRightDown(a):
     return down(right(a))
+
+
+def isSameColor(a, b):
+    if a.islower() and b.islower:
+        return True
+    if a.isupper() and b.isupper:
+        return True
+    return False
 
 class Jeu:
     def __init__(self, etat_initial, fct_but, fct_transitions, verbose=True):
@@ -120,6 +129,8 @@ class ChessEtat:
         #echeque = b => b en echeque
         #echeque = w => w en echeque
 
+        self.actions = {}
+
     def __str__(self):
         t = Template("""
    a   b   c   d   e   f   g   h  
@@ -158,145 +169,83 @@ class ChessEtat:
                             a0=self.tableau[6, 0], b0=self.tableau[6, 1], c0=self.tableau[6, 2], d0=self.tableau[6, 3], e0=self.tableau[6, 4], f0=self.tableau[6, 5], g0=self.tableau[6, 6], h0=self.tableau[6, 7],
                             a0=self.tableau[7, 0], b0=self.tableau[7, 1], c0=self.tableau[7, 2], d0=self.tableau[7, 3], e0=self.tableau[7, 4], f0=self.tableau[7, 5], g0=self.tableau[7, 6], h0=self.tableau[7, 7]
                             )
-#merde les pieces vont manger leur allier dans le cas acutelle TODO
+
+
 def pion(self,player,position):
-    if player.islower():
-        x,y = down(position)
-        if y not None:
-            if self.tableau[x][y] == '-':
-                #pion avence de 1
-                self.tableau[position[0]][position[1]] = '-'
-                self.tableau[x][y] = 'p'
-                #action 1 fait
-            x,y = diagonalRightDown(position)
-            if self.tableau[x][y].isupper():
-                #pion a manger a droite
-                self.tableau[position[0]][position[1]] = '-'
-                self.tableau[x][y] = 'p'
-                #action 2 
-            x,y = diagonalLeftDown(position)
-            if self.tableau[x][y].isupper():
-                #pion a manger a droite
-                self.tableau[position[0]][position[1]] = '-'
-                self.tableau[x][y] = 'p'
-                #action 2 
-            if position[y] == 1: 
-                #avence de 2 au premier tour
-                x,y = down(down(position))
-                self.tableau[position[0]][position[1]] = '-'
-                self.tableau[x][y] = 'p'
-                #action 3 
-    else: 
-        x,y = top(position)
-        if y not None:
-            if self.tableau[x][y] == '-':
-                #pion avence de 1
-                self.tableau[position[0]][position[1]] = '-'
-                self.tableau[x][y] = 'P'
-                #action 1 fait
-            x,y = diagonalRighttop(position)
-            if player.islower():
-                if self.tableau[x][y].isupper():
-                    #pion a manger a droite
-                    self.tableau[position[0]][position[1]] = '-'
-                    self.tableau[x][y] = 'P'
-                    #action 2
-                else:
-                    break
-            else:
-                if self.tableau[x][y].islower():
-                    #pion a manger a droite
-                    self.tableau[position[0]][position[1]] = '-'
-                    self.tableau[x][y] = 'P'
-                    #action 2
-                else:
-                    break
 
-            x,y = diagonalLefttop(position)
-            if player.islower():
-                if self.tableau[x][y].isupper():
-                    #pion a manger a droite
-                    self.tableau[position[0]][position[1]] = '-'
-                    self.tableau[x][y] = 'P'
-                    #action 2 
-                else:
-                    break
-            else:
-                if self.tableau[x][y].islower():
-                    #pion a manger a droite
-                    self.tableau[position[0]][position[1]] = '-'
-                    self.tableau[x][y] = 'P'
-                    #action 2 
-                else:
-                    break
+    old_x, old_y = position
 
-            if position[y] == 1: 
-                #avence de 2 au premier tour
-                x,y = top(top(position))
-                self.tableau[position[0]][position[1]] = '-'
-                self.tableau[x][y] = 'P'
-                #action 3 
+    moveTopDown = down if player.islower() else top
+    movesDiagonal = [diagonalRightDown, diagonalLeftDown] if player.islower() else [diagonalRightTop, diagonalLeftTop]
+    specialMove = []
+
+    if player.islower() and old_y == 1:
+        specialMove.append(down(down))
+    elif player.isupper() and old_y == 6:
+        specialMove.append(top(top))
+
+    moves = moveTopDown + movesDiagonal + specialMove
+
+    if y not None:
+        for m in moves:
+            x,y = m(position)
+            if not isSameColor(self.tableau[y][x], player):
+                #mange
+                self.tableau[y][x] = player
+                self.tableau[old_y][old_x] = '-'
+                self.actions[(x,y,player)] = copy.deepcopy(self.tableau)
 
 def rock(self,player,position):
+
+    old_x, old_y = position
     moves = [top,down,left,right]
+
     for m in moves:
-        p = position  
         while True:
-            x,y = m(p)
+            x,y = m((old_x, old_y))
             if y is None or x is None:
                 break
             #check pour ne pas canibaliser
-            if player.islower():
-                if self.tableau[x][y].islower():
-                    break
-            else:
-                if self.tableau[x][y].isupper():
-                    break    
+            if isSameColor(player, self.tableau[y][x]):
+                break  
 
-            xyCase = tableau[x][y]
-            self.tableau[p[0]][p[1]] = '-'
-            self.tableau[x][y] = player
-            p = x,y
+            xyCase = tableau[y][x]
+            self.tableau[old_y][old_x] = '-'
+            self.tableau[y][x] = player
+            old_x, old_y = x,y
+
             # a avencer ou manger doit adder a la config
-            
+            self.actions[(x,y,player)] = copy.deepcopy(self.tableau)
+
             #check pour savoir si on a manger
-            if player.islower():
-                if xyCase:
-                    break
-            else:
-                if xyCase:
-                    break  
+            if not isSameColor(player, xyCase):
+                break 
 
 def bishop(self,player,position):
+
+    old_x, old_y = position
     moves = [diagonalLeftDown,diagonalRightDown,diagonalRightTop,diagonalLeftTop]
+
     for m in moves:
         p = position
         while True:
-            x,y = m(p)
+            x,y = m((old_x, old_y))
             if y is None or x is None:
                 break
 
             #check pour ne pas canibaliser
-            if player.islower():
-                if self.tableau[x][y].islower():
-                    break
-            else:
-                if self.tableau[x][y].isupper():
-                    break    
+            if isSameColor(player, self.tableau[y][x]):
+                break  
 
-            xyCase = tableau[x][y]
-            self.tableau[p[0]][p[1]] = '-'
-            self.tableau[x][y] = player
-            p = x,y
+            xyCase = tableau[y][x]
+            self.tableau[old_y][old_x] = '-'
+            self.tableau[y][x] = player
+            old_x, old_y = x,y
             # a avencer ou manger doit adder a la config
-            
+            self.actions[(x,y,player)] = copy.deepcopy(self.tableau)            
             #check pour savoir si on a manger
-            if player.islower():
-                if xyCase:
-                    break
-            else:
-                if xyCase:
-                    break  
+            if not isSameColor(player, xyCase):
+                break 
 
 def knight(self,player,position):
     moves = []
@@ -309,71 +258,69 @@ def knight(self,player,position):
     moves.append(right(right(top())))
     moves.append(right(right(down())))
 
+    old_x, old_y = position
+
     for m in moves:
-        x,y = m(position)
+        x,y = m((old_x, old_y))
         if x not None and y not None:
+
             #check pour ne pas canibaliser
-            if player.islower():
-                if self.tableau[x][y].islower():
-                    break
-            else:
-                if self.tableau[x][y].isupper():
-                    break    
-                    #mange ou deplace
-            self.tableau[p[0]][p[1]] = '-'
-            self.tableau[x][y] = player
+            if isSameColor(player, self.tableau[y][x]):
+                break
+
+            #mange ou deplace
+            self.tableau[old_y][old_x] = '-'
+            self.tableau[y][x] = player
+
+            self.actions[(x,y,player)] = copy.deepcopy(self.tableau)
 
 def queen(self,player,position):
+
+    old_x, old_y = position
     moves = [diagonalLeftDown,diagonalRightDown,diagonalRightTop,diagonalLeftTop,left,right,top,down]
+
     for m in moves:
-        p = position  
         while True:
-            x,y = m(p)
+            x,y = m((old_x, old_y))
             if y is None or x is None:
                 break
-            if player.islower():
-                if self.tableau[x][y].islower():
-                    break
-            else:
-                if self.tableau[x][y].isupper():
-                    break    
+
+            #check pour ne pas canibaliser
+            if isSameColor(player, self.tableau[y][x]):
+                break  
+
             #mange ou deplace    
-            xyCase = tableau[x][y]
-            self.tableau[p[0]][p[1]] = '-'
-            self.tableau[x][y] = 'b'
-            p = x,y
+            xyCase = tableau[y][x]
+            self.tableau[old_y][old_x] = '-'
+            self.tableau[y][x] = 'b'
+            old_x, old_y = x,y
+
             #a avencer ou manger doit adder a la config
-            if player.islower():
-                if xyCase:
-                    break
-            else:
-                if xyCase:
-                    break  
+            self.actions[(x,y,player)] = copy.deepcopy(self.tableau)
+            #check pour savoir si on a manger
+            if not isSameColor(player, xyCase):
+                break 
 
 def king(self,player,position):
+    old_x, old_y = position
     moves = [diagonalLeftDown,diagonalRightDown,diagonalRightTop,diagonalLeftTop,left,right,top,down]
     for m in moves:
-        x,y = m(position)
+        x,y = m((old_x, old_y))
         if x not None and y not None:
             # Make sure king can actually move there
-            if not king_is_checked(x, y, player):
-                return False
+            if king_is_checked(x, y, player):
+                break
 
-            if player.islower():
-                if self.tableau[x][y].islower():
-                    break
-            else:
-                if self.tableau[x][y].isupper():
-                    break
+            #check pour ne pas canibaliser
+            if isSameColor(player, self.tableau[y][x]):
+                break
 
-            #faut verifier que rien sur le board peut attaquer cette case la 
-
-            #TODO
             #mange ou deplace
             self.tableau[p[0]][p[1]] = '-'
             self.tableau[x][y] = 'w'
-    #manque le rock
-    #TODO
+
+            self.actions[(x,y,player)] = copy.deepcopy(self.tableau)
+            #faut verifier que rien sur le board peut attaquer cette case la 
 
 
 #verify if king is checked at pos x, y
@@ -465,83 +412,51 @@ def chess_but(etat):
             pts+=20
         if i == "W":
             pts+=1000000
-        #verifier si en echeque pas fait
-        #TODO
+
     return pts
 
-#TODO pas encore modifier
-def player_factory(player):
-    if player == 'aleatoire':
-        return joueur_aleatoire
-
-    if player == 'humain':
-        return joueur_humain
-
-    if player.endswith('.py'):
-        import imp
-        player = os.path.abspath(player)
-        name = player.replace('/', '.').replace('.', '_')
-        solution = imp.load_source(name, player)
-
-        return Joueur(player, solution.joueur_tictactoe)
-
-    return None
 
 #TODO pas encore modifier
 DESCRIPTION = "Lancer une partie d'echecs"
 
-#TODO pas encore modifier
-def buildArgsParser():
-    p = argparse.ArgumentParser(description=DESCRIPTION,
-                                formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
-    # Paramètres globaux
-    p.add_argument('-joueur1', dest="player1", metavar="JOUEUR", action='store', type=str, required=False, default="solution_tictactoe.py",
-                   help="'humain', 'aleatoire' ou le fichier contenant votre solution.")
+#####
+# Execution en tant que script
+###
+def main():
+    parser = buildArgsParser()
+    args = parser.parse_args()
+    player1 = args.player1
+    player2 = args.player2
+    is_verbose = args.is_verbose
 
-    p.add_argument('-joueur2', dest="player2", metavar="JOUEUR", action='store', type=str, required=False, default="solution_tictactoe.py",
-                   help="'humain', 'aleatoire' ou le fichier contenant votre solution.")
+    if player1 == "humain" or player2 == "humain":
+        is_verbose = True  # Afficher les grilles si c'est un joueur humain.
 
-    p.add_argument('-v', dest='is_verbose', action='store_true', required=False,
-                   help='activer le mode verbose')
+    if player1 not in ['aleatoire', 'humain'] and not player1.endswith('.py'):
+        parser.error('Joueur 1 doit être [aleatoire, humain, solution_tictactoe.py]')
 
-    return p
+    if player2 not in ['aleatoire', 'humain'] and not player2.endswith('.py'):
+        parser.error('Joueur 2 doit être [aleatoire, humain, solution_tictactoe.py]')
 
+    if player1.endswith('.py') and not os.path.isfile(player1):
+        parser.error("-joueur1 '{}' must be an existing file!".format(os.path.abspath(player1)))
 
-    #####
-    # Execution en tant que script
-    ###
-    def main():
-        parser = buildArgsParser()
-        args = parser.parse_args()
-        player1 = args.player1
-        player2 = args.player2
-        is_verbose = args.is_verbose
+    if player2.endswith('.py') and not os.path.isfile(player2):
+        parser.error("-joueur2 '{}' must be an existing file!".format(os.path.abspath(player2)))
 
-        if player1 == "humain" or player2 == "humain":
-            is_verbose = True  # Afficher les grilles si c'est un joueur humain.
+    # Jouer une partie de Tic-Tac-Toe
 
-        if player1 not in ['aleatoire', 'humain'] and not player1.endswith('.py'):
-            parser.error('Joueur 1 doit être [aleatoire, humain, solution_tictactoe.py]')
-
-        if player2 not in ['aleatoire', 'humain'] and not player2.endswith('.py'):
-            parser.error('Joueur 2 doit être [aleatoire, humain, solution_tictactoe.py]')
-
-        if player1.endswith('.py') and not os.path.isfile(player1):
-            parser.error("-joueur1 '{}' must be an existing file!".format(os.path.abspath(player1)))
-
-        if player2.endswith('.py') and not os.path.isfile(player2):
-            parser.error("-joueur2 '{}' must be an existing file!".format(os.path.abspath(player2)))
-
-        # Jouer une partie de Tic-Tac-Toe
-
-        chess = Jeu(ChessEtat(), chess_but, chess_transitions, verbose=is_verbose)
-        chess.jouer_partie(player_factory(player1), player_factory(player2))
+    chess = Jeu(ChessEtat(), chess_but, chess_transitions, verbose=is_verbose)
+    chess.jouer_partie(player_factory(player1), player_factory(player2))
 
 
 
 
-    if __name__ == "__main__":
-        main()
+if __name__ == "__main__":
+    main()
+
+
+
 
 
