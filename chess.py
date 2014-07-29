@@ -352,22 +352,6 @@ def mouvement(self, position, type):
 
 
 def chess_transitions(etat):
-    # Determiner c'est le tour à qui avec etat.turn
-    #TODO 
-    """
-    if np.sum(etat.tableau == 'X') > np.sum(etat.tableau == 'O'):
-        # Tour de O
-        symbol = 'O'
-    else:
-        # Tour de X
-        symbol = 'X'
-    positions_vides = np.nonzero(etat.tableau == ' ')
-    actions = {}
-    for i, j in zip(positions_vides[0], positions_vides[1]):
-        nouvel_etat = copy.deepcopy(etat)
-        nouvel_etat.tableau[i, j] = symbol
-        actions[(i, j)] = nouvel_etat
-    """
     if etat.turn == "B":
         for i in range(etat.tableau):
             for j in range(etat.tableau[i]):
@@ -449,8 +433,6 @@ def main():
 
     chess = Jeu(ChessEtat(), chess_but, chess_transitions, verbose=is_verbose)
     chess.jouer_partie(player_factory(player1), player_factory(player2))
-
-
 
 
 if __name__ == "__main__":
