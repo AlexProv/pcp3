@@ -143,7 +143,7 @@ def get_attack_moves_for_piece(piece, x, y):
         moves.append(generate_down_line_moves(x,y))
         moves.append(generate_horizontal_line_moves(x,y))
     if piece == "K" or "k":
-        moves.append(generate_knight_attack_moves)
+        moves.append(generate_knight_attack_moves(x,y))
     if piece == "B" or "b":
         moves.append(generate_diagonal_line_moves(x,y))
 

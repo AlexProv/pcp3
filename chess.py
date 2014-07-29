@@ -159,7 +159,7 @@ class ChessEtat:
                             a0=self.tableau[7, 0], b0=self.tableau[7, 1], c0=self.tableau[7, 2], d0=self.tableau[7, 3], e0=self.tableau[7, 4], f0=self.tableau[7, 5], g0=self.tableau[7, 6], h0=self.tableau[7, 7]
                             )
 #merde les pieces vont manger leur allier dans le cas acutelle TODO
-def pion(self,player):
+def pion(self,player,position):
     if player.islower():
         x,y = down(position)
         if y not None:
@@ -186,7 +186,6 @@ def pion(self,player):
                 self.tableau[position[0]][position[1]] = '-'
                 self.tableau[x][y] = 'p'
                 #action 3 
-            #je code pas l'action du pion qui coupe vrm trop compliquer
     else: 
         x,y = top(position)
         if y not None:
@@ -238,7 +237,7 @@ def pion(self,player):
                 self.tableau[x][y] = 'P'
                 #action 3 
 
-def rock(self,player):      
+def rock(self,player,position):
     moves = [top,down,left,right]
     for m in moves:
         p = position  
@@ -268,7 +267,7 @@ def rock(self,player):
                 if xyCase:
                     break  
 
-def bishop(self,player):    
+def bishop(self,player,position):
     moves = [diagonalLeftDown,diagonalRightDown,diagonalRightTop,diagonalLeftTop]
     for m in moves:
         p = position
@@ -299,7 +298,7 @@ def bishop(self,player):
                 if xyCase:
                     break  
 
-def knight(self,player):
+def knight(self,player,position):
     moves = []
     moves.append(top(top(left())))
     moves.append(top(top(right())))
@@ -324,7 +323,7 @@ def knight(self,player):
             self.tableau[p[0]][p[1]] = '-'
             self.tableau[x][y] = player
 
-def queen(self,player):
+def queen(self,player,position):
     moves = [diagonalLeftDown,diagonalRightDown,diagonalRightTop,diagonalLeftTop,left,right,top,down]
     for m in moves:
         p = position  
@@ -351,7 +350,7 @@ def queen(self,player):
                 if xyCase:
                     break  
 
-def king(self,player):
+def king(self,player,position):
     moves = [diagonalLeftDown,diagonalRightDown,diagonalRightTop,diagonalLeftTop,left,right,top,down]
     for m in moves:
         x,y = m(position)
@@ -451,6 +450,8 @@ def chess_but(etat):
             pts-=5
         if i == "q":
             pts-=20 
+        if i == "w":
+            pts-=1000000
 
         if i == "P":
             pts+=1
@@ -462,7 +463,8 @@ def chess_but(etat):
             pts+=5
         if i == "Q":
             pts+=20
-
+        if i == "W":
+            pts+=1000000
         #verifier si en echeque pas fait
         #TODO
     return pts
