@@ -195,6 +195,7 @@ def build_transitions_for_piece(actions, etat, position, piece):
         actions[(x,y,piece)].tableau[y][x] = piece
 
 
+
 def chess_transitions(tour, etat):
     actions = {}
     for y, row in enumerate(etat.tableau):

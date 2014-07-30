@@ -2,9 +2,9 @@
 
 
 def isSameColor(a, b):
-    if a.islower() and b.islower:
+    if a.islower() and b.islower():
         return True
-    if a.isupper() and b.isupper:
+    if a.isupper() and b.isupper():
         return True
     return False
 
@@ -130,24 +130,22 @@ def generate_knight_attack_moves(etat,piece,x,y):
 def generate_pawn_moves(etat,piece,x,y):
     moves = []
     if piece.islower():
-        if etat.tableau[y+1][x] == "-":
-            moves.append((x,y+1))
-
         try:
-            if etat.tableau[y+1][x+1].isupper():
-                moves.append((x+1,y+1))
-            if etat.tableau[y+1][x-1].isupper():
-                moves.append((x-1,y+1))
+            if etat.tableau[y+1][x] == "-":
+                moves.append((x,y+1))
+                if etat.tableau[y+1][x+1].isupper():
+                    moves.append((x+1,y+1))
+                if etat.tableau[y+1][x-1].isupper():
+                    moves.append((x-1,y+1))
         except IndexError:
             pass
 
         if y == 1 and etat.tableau[3][x] == "-":
             moves.append((x,y+2))
     else:
-        if etat.tableau[y-1][x] == "-":
-            moves.append((x,y-1))
-
         try:
+            if etat.tableau[y-1][x] == "-":
+                moves.append((x,y-1))
             if etat.tableau[y-1][x+1].isupper():
                 moves.append((x+1,y-1))
             if etat.tableau[y-1][x-1].isupper():
