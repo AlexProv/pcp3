@@ -35,15 +35,17 @@ def joueur_echec(etat,fct_but,fct_transitions,str_joueur):
     #TODO: Implémenter un joueur alpha-beta
 
     # Retourne une action aléatoire (.~= À MODIFIER =~.)
-    #action,etat = random.choice(fct_transitions(etat).items())    
+    #action,etat = random.choice(fct_transitions(etat).items())
     _,action = Max_Tour(etat,float("-infinity"),float("infinity"),fct_but,fct_transitions,str_joueur)
     return action
 
 #max est joueur utilite, etat
 def Max_Tour(etat,alpha,beta,fct_but,fct_transitions,str_joueur):
+    import pdb; pdb.set_trace()
     utilite = fct_but(etat)
+    print utilite
     if utilite is not None:
-        if str_joueur == 'X':
+        if str_joueur == 'B':
             return utilite, None
         else:
             return -utilite,None
@@ -63,9 +65,11 @@ def Max_Tour(etat,alpha,beta,fct_but,fct_transitions,str_joueur):
         
 
 def Min_Tour(etat,alpha,beta,fct_but,fct_transitions,str_joueur):
+    import pdb; pdb.set_trace()
     utilite = fct_but(etat)
+    print utilite
     if utilite is not None:
-        if str_joueur == 'X':
+        if str_joueur == 'n':
             return utilite, None
         else:
             return -utilite,None

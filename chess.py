@@ -65,7 +65,6 @@ class Jeu:
         self.etat_initial = etat_initial
         self.resultat = None
         self.vainqueur = ''
-        self.turn = 'B'
         self.checkmate = False
 
     def resultat_partie(self):
@@ -83,29 +82,33 @@ class Jeu:
     def jouer_partie(self, joueur_max, joueur_min):
         etat = copy.deepcopy(self.etat_initial)
         print etat
+        tour = 'B'
         while True:
-
             # Blanc ###
             action = joueur_max(copy.deepcopy(etat), self.but, self.transitions, 'B')
-            import pdb; pdb.set_trace()
-            etat = self.transitions(etat)[action]
+            etat = self.transitions(tour, etat)[action]
+
             print etat
             self.resultat = self.but(etat)
 
             if self.checkmate:
                 print self.resultat_partie()
                 break
+
+            tour = 'B' if tour == 'n' else 'n'
 
 
             # Noir ###
             action = joueur_min(copy.deepcopy(etat), self.but, self.transitions, 'n')
-            etat = self.transitions(etat)[action]
+            etat = self.transitions(tour, etat)[action]
             print etat
             self.resultat = self.but(etat)
 
             if self.checkmate:
                 print self.resultat_partie()
                 break
+
+            tour = 'B' if tour == 'n' else 'n'
 
 class ChessEtat:
 
@@ -201,11 +204,11 @@ def build_transitions_for_piece(actions, etat, position, piece):
         actions[(x,y,piece)].tableau[y][x] = piece
 
 
-def chess_transitions(etat):
+def chess_transitions(tour, etat):
     actions = {}
     for y, row in enumerate(etat.tableau):
         for x, piece in enumerate(row):
-            if isSameColor(piece, etat.hero) and piece != "-":
+            if isSameColor(piece, tour) and piece != "-":
                 build_transitions_for_piece(actions,etat,(x,y),etat.tableau[y][x])
 
     return actions
