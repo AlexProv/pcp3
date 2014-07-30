@@ -12,6 +12,7 @@ def human(etat, fct_but, fct_transitions, str_joueur):
     x = ord(x.upper()) - 65
     fin = x,y,c
 
+    #import pdb; pdb.set_trace()
     fct_transitions(etat)[(x,y,c)]
 
     return fin

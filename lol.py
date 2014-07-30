@@ -10,4 +10,13 @@ tableau = np.array([['r','k','b','q','w','b','k','r'],
                                  ['P','P','P','P','P','P','P','P'],
                                  ['R','K','B','Q','W','B','K','R']])
 
-import pdb; pdb.set_trace()
+
+def change_my_dict(dictio):
+
+	dictio[1] = "lol"
+
+
+dictio = {}
+print dictio
+change_my_dict(dictio)
+print dictio

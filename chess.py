@@ -52,9 +52,9 @@ def diagonalRightDown(a):
 
 
 def isSameColor(a, b):
-    if a.islower() and b.islower:
+    if a.islower() and b.islower():
         return True
-    if a.isupper() and b.isupper:
+    if a.isupper() and b.isupper():
         return True
     return False
 
@@ -66,6 +66,7 @@ class Jeu:
         self.resultat = None
         self.vainqueur = ''
         self.turn = 'B'
+        self.checkmate = False
 
     def resultat_partie(self):
         if self.resultat > 0:
@@ -73,7 +74,7 @@ class Jeu:
             return 'Joueur Blanc a gagne'
 
         if self.resultat < 0:
-            self.vainqueur = 'N'
+            self.vainqueur = 'n'
             return 'Joueur Noir a gagne'
 
         self.vainqueur = ''
@@ -84,25 +85,25 @@ class Jeu:
         print etat
         while True:
 
-            self.turn = 'B' if self.turn == 'N' else 'N'
             # Blanc ###
             action = joueur_max(copy.deepcopy(etat), self.but, self.transitions, 'B')
+            import pdb; pdb.set_trace()
             etat = self.transitions(etat)[action]
             print etat
             self.resultat = self.but(etat)
 
-            if self.resultat is not None:
-                self.afficher(self.resultat_partie())
+            if self.checkmate:
+                print self.resultat_partie()
                 break
 
 
             # Noir ###
-            action = joueur_min(copy.deepcopy(etat), self.but, self.transitions, 'N')
+            action = joueur_min(copy.deepcopy(etat), self.but, self.transitions, 'n')
             etat = self.transitions(etat)[action]
             print etat
             self.resultat = self.but(etat)
 
-            if self.resultat is not None:
+            if self.checkmate:
                 print self.resultat_partie()
                 break
 
@@ -135,7 +136,7 @@ class ChessEtat:
         #echeque = w => w en echeque
 
         self.actions = {}
-        self.hero = 'N'
+        self.hero = 'B'
 
     def __str__(self):
         t = Template("""
@@ -177,77 +178,6 @@ class ChessEtat:
                             )
 
 
-def pion(etat,player,position):
-    old_x, old_y = position
-    moves = get_attack_moves_for_piece(etat,player, old_x, old_y)
-
-    for x,y in moves:
-        #mange
-        etat.tableau[y][x] = player
-        etat.tableau[old_y][old_x] = '-'
-        etat.actions[(x,y,player)] = copy.deepcopy(etat.tableau)
-
-def rock(etat,player,position):
-    old_x, old_y = position
-    moves = get_attack_moves_for_piece(etat,player, old_x, old_y)
-    for x, y in moves:
-        xyCase = tableau[y][x]
-        etat.tableau[old_y][old_x] = '-'
-        etat.tableau[y][x] = player
-        
-        # a avencer ou manger doit adder a la config
-        etat.actions[(x,y,player)] = copy.deepcopy(etat.tableau)
-
-def bishop(etat,player,position):
-
-    old_x, old_y = position
-    moves = get_attack_moves_for_piece(etat,player, old_x, old_y)
-
-    for x,y in moves:
-        xyCase = tableau[y][x]
-        etat.tableau[old_y][old_x] = '-'
-        etat.tableau[y][x] = player
-        old_x, old_y = x,y
-        # a avencer ou manger doit adder a la config
-        etat.actions[(x,y,player)] = copy.deepcopy(etat.tableau)            
-
-def knight(etat,player,position):
-
-    old_x, old_y = position
-    moves = get_attack_moves_for_piece(etat,player, old_x, old_y)
-
-    for x,y in moves:
-
-        etat.tableau[old_y][old_x] = '-'
-        etat.tableau[y][x] = player
-
-        etat.actions[(x,y,player)] = copy.deepcopy(etat.tableau)
-
-def queen(etat,player,position):
-    old_x, old_y = position
-    moves = get_attack_moves_for_piece(etat,player, old_x, old_y)
-
-    for x,y in moves:
-        #mange ou deplace    
-        xyCase = tableau[y][x]
-        etat.tableau[old_y][old_x] = '-'
-        etat.tableau[y][x] = 'b'
-        old_x, old_y = x,y
-
-        #a avencer ou manger doit adder a la config
-        etat.actions[(x,y,player)] = copy.deepcopy(etat.tableau)
-
-def king(etat,player,position):
-    old_x, old_y = position
-    moves = get_attack_moves_for_piece(etat,player, old_x, old_y)
-    for x,y in moves:
-        #mange ou deplace
-        etat.tableau[old_y][old_x] = '-'
-        etat.tableau[y][x] = player
-
-        etat.actions[(x,y,player)] = copy.deepcopy(etat.tableau)
-        #faut verifier que rien sur le board peut attaquer cette case la 
-
 
 #verify if king is checked at pos x, y
 def king_is_checked(etat, x,y, player):
@@ -261,67 +191,55 @@ def king_is_checked(etat, x,y, player):
     return False
 
 
-def mouvement(etat, position, type):
-    x, y = position
-    t = etat.tableau[y][x]
-    if t == 'p' or t == 'P':
-        pion(etat, t, position)
-    if t == 'r' or t == 'R':
-        rock(etat, t, position)
-    if t == 'b' or t == 'B':
-        bishop(etat, t, position)
-    if t == 'k' or t == 'T':
-        knight(etat, t, position)
-    if t == 'q' or t == 'Q':
-        queen(etat, t, position)
-    if t == 'w' or t == 'T':
-        king(etat, t, position)
+def build_transitions_for_piece(actions, etat, position, piece):
+    old_x, old_y = position
+    moves = get_attack_moves_for_piece(etat, piece, old_x, old_y)
+    #import pdb; pdb.set_trace()
+    for x,y in moves:
+        actions[(x,y,piece)] = copy.deepcopy(etat)
+        actions[(x,y,piece)].tableau[old_y][old_x] = '-'
+        actions[(x,y,piece)].tableau[y][x] = piece
 
 
 def chess_transitions(etat):
-    if etat.hero == "B":
-        for i in range(len(etat.tableau)):
-            for j in range(len(etat.tableau[i])):
-                if etat.tableau[i][j].islower():
-                    mouvement(etat, (i,j),etat.tableau[i][j] )
-                    #doit constuire le {} d'action 
-    else:
-        for i in range(len(etat.tableau)):
-            for j in range(len(etat.tableau[i])):
-                if not etat.tableau[i][j].islower():
-                    mouvement(etat, (i,j),etat.tableau[i][j])
-                    #doit constuire le {} d'action 
-    return etat.actions
+    actions = {}
+    for y, row in enumerate(etat.tableau):
+        for x, piece in enumerate(row):
+            if isSameColor(piece, etat.hero) and piece != "-":
+                build_transitions_for_piece(actions,etat,(x,y),etat.tableau[y][x])
+
+    return actions
 
 
 def chess_but(etat):
     pts = 0
-    for i in etat.tableau:
-        if i == "p":
-            pts-=1
-        if i == "k":
-            pts-=3  
-        if i == "b":
-            pts-=3    
-        if i == "r":
-            pts-=5
-        if i == "q":
-            pts-=20 
-        if i == "w":
-            pts-=1000000
+    for row in etat.tableau:
+        for piece in row:
+            if piece == "p":
+                pts-=1
+            if piece == "k":
+                pts-=3  
+            if piece == "b":
+                pts-=3    
+            if piece == "r":
+                pts-=5
+            if piece == "q":
+                pts-=20 
+            if piece == "w":
+                pts-=1000000
 
-        if i == "P":
-            pts+=1
-        if i == "K":
-            pts+=3  
-        if i == "B":
-            pts+=3    
-        if i == "R":
-            pts+=5
-        if i == "Q":
-            pts+=20
-        if i == "W":
-            pts+=1000000
+            if piece == "P":
+                pts+=1
+            if piece == "K":
+                pts+=3  
+            if piece == "B":
+                pts+=3    
+            if piece == "R":
+                pts+=5
+            if piece == "Q":
+                pts+=20
+            if piece == "W":
+                pts+=1000000
 
     return pts
 
