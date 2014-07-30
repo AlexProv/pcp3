@@ -159,7 +159,7 @@ class ChessEtat:
 6  $a6 | $b6 | $c6 | $d6 | $e6 | $f6 | $g6 | $h6
   ---+---+---+---+---+---+---+---
 7  $a7 | $b7 | $c7 | $d7 | $e7 | $f7 | $g7 | $h7
-  ---+---+---+---+---+---+---+---
+   a   b   c   d   e   f   g   h  
 """)
         return t.substitute(a0=self.tableau[0, 0], b0=self.tableau[0, 1], c0=self.tableau[0, 2], d0=self.tableau[0, 3], e0=self.tableau[0, 4], f0=self.tableau[0, 5], g0=self.tableau[0, 6], h0=self.tableau[0, 7],
                             a1=self.tableau[1, 0], b1=self.tableau[1, 1], c1=self.tableau[1, 2], d1=self.tableau[1, 3], e1=self.tableau[1, 4], f1=self.tableau[1, 5], g1=self.tableau[1, 6], h1=self.tableau[1, 7],
