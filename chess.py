@@ -7,7 +7,6 @@ import numpy as np
 import chess
 import copy
 import alphabeta
-
 from string import Template
 from moves import get_attack_moves_for_piece
 from human import human
@@ -250,9 +249,11 @@ def main():
 
 
 if __name__ == "__main__":
+    #import cProfile
+    #cProfile.run('main()')
     main()
 
 
 
 
-
+#python -m cProfile -o log.log chess.py
