@@ -161,10 +161,10 @@ def generate_pawn_moves(etat,piece,x,y):
         try:
             if etat.tableau[y+1][x] == "-":
                 moves.append((x,y+1))
-                if etat.tableau[y+1][x+1].isupper():
-                    moves.append((x+1,y+1))
-                if etat.tableau[y+1][x-1].isupper():
-                    moves.append((x-1,y+1))
+            if etat.tableau[y+1][x+1].isupper():
+                moves.append((x+1,y+1))
+            if etat.tableau[y+1][x-1].isupper():
+                moves.append((x-1,y+1))
         except IndexError:
             pass
 
@@ -175,7 +175,7 @@ def generate_pawn_moves(etat,piece,x,y):
             if etat.tableau[y-1][x] == "-":
                 moves.append((x,y-1))
             if etat.tableau[y-1][x+1].isupper():
-                moves.append((x+1,y-1))
+                moves.append((x+1,y-1)) 
             if etat.tableau[y-1][x-1].isupper():
                 moves.append((x-1,y-1))
         except IndexError:

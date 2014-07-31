@@ -1,4 +1,4 @@
-MAX_DEPTH = 2
+MAX_DEPTH = 5
 
 def joueur_echec(etat,fct_but,fct_transitions,str_joueur):
    
@@ -51,3 +51,12 @@ def Min_Tour(etat,alpha,beta,fct_but,fct_transitions,str_joueur, current_depth):
             return utilite, action
         beta = min(beta,utilite)
     return utilite, action
+
+def main():
+    print "AA"
+    #a = Max_Tour(etat,alpha,beta,fct_but,fct_transitions,str_joueur)
+
+
+
+if __name__ == "__main__":
+    main()

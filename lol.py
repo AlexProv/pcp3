@@ -1,22 +1,16 @@
-import numpy as np
+from mpi4py import MPI
+import numpy
+import sys
+
+data = {'a':1, 'b':2, 'c':3 }
+
+comm = MPI.COMM_SELF.Spawn(sys.executable,
+                           args=['lolprint.py'],
+                           maxprocs=5)
 
 
-tableau = np.array([['r','k','b','q','w','b','k','r'],
-                                 ['p','p','p','p','p','p','p','p'],
-                                 ['-','-','-','-','-','-','-','-'],
-                                 ['-','-','-','-','-','-','-','-'],
-                                 ['-','-','-','-','-','-','-','-'],
-                                 ['-','-','-','-','-','-','-','-'],
-                                 ['P','P','P','P','P','P','P','P'],
-                                 ['R','K','B','Q','W','B','K','R']])
+comm.send(data, dest=2, tag=11)
+size = comm.Get_size()
+rank = comm.Get_rank()
 
-
-def change_my_dict(dictio):
-
-	dictio[1] = "lol"
-
-
-dictio = {}
-print dictio
-change_my_dict(dictio)
-print dictio
+comm.Disconnect()

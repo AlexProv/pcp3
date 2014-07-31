@@ -7,55 +7,11 @@ import numpy as np
 import chess
 import copy
 import alphabeta
+
 from string import Template
-from moves import get_attack_moves_for_piece
+from moves import get_attack_moves_for_piece, isSameColor
 from human import human
 
-
-def left(a):
-    x,y = a
-    x-=1
-    if x < 0:
-        return None,None
-    return x,y
-def right(a):
-    x,y = a
-    x+=1
-    if x > 7:
-        return None,None
-    return x,y
-
-def top(a):
-    x,y = a
-    y+=1
-    if y > 7:
-        return None,None
-    return x,y
-def down(a):
-    x,y = a
-    y-=1
-    if y < 0:
-        return None,None
-    return x,y
-
-
-
-def diagonalLeftTop(a):
-    return top(left(a))
-def diagonalRightTop(a):
-    return top(right(a))
-def diagonalLeftDown(a):
-    return down(left(a))
-def diagonalRightDown(a):
-    return down(right(a))
-
-
-def isSameColor(a, b):
-    if a.islower() and b.islower():
-        return True
-    if a.isupper() and b.isupper():
-        return True
-    return False
 
 class Jeu:
     def __init__(self, etat_initial, fct_but, fct_transitions):
@@ -200,7 +156,6 @@ def chess_transitions(tour, etat):
     for y, row in enumerate(etat.tableau):
         for x, piece in enumerate(row):
             if isSameColor(piece, tour) and piece != "-":
-                print "PIECE IS ", piece
                 build_transitions_for_piece(actions,etat,(x,y),etat.tableau[y][x])
 
     return actions
@@ -239,9 +194,6 @@ def chess_but(etat):
     return pts
 
 
-#####
-# Execution en tant que script
-###
 def main():
 
     # Jouer une partie d`echec
@@ -250,11 +202,4 @@ def main():
 
 
 if __name__ == "__main__":
-    #import cProfile
-    #cProfile.run('main()')
     main()
-
-
-
-
-#python -m cProfile -o log.log chess.py
