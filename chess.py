@@ -200,6 +200,7 @@ def chess_transitions(tour, etat):
     for y, row in enumerate(etat.tableau):
         for x, piece in enumerate(row):
             if isSameColor(piece, tour) and piece != "-":
+                print "PIECE IS ", piece
                 build_transitions_for_piece(actions,etat,(x,y),etat.tableau[y][x])
 
     return actions

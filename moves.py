@@ -23,7 +23,7 @@ def generate_top_line_moves(etat,piece,x,y):
                 moves.append((_x,_y))
         else:
             break
-        _y+-1
+        _y-=1
         
     return moves
 

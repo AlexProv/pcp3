@@ -13,6 +13,6 @@ def human(etat, fct_but, fct_transitions, str_joueur):
     fin = x,y,c
 
     #import pdb; pdb.set_trace()
-    fct_transitions(str_joueur, etat)[(x,y,c)]
+    #fct_transitions(str_joueur, etat)[(x,y,c)]
 
     return fin
