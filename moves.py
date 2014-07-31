@@ -12,29 +12,37 @@ def isSameColor(a, b):
 def generate_top_line_moves(etat,piece,x,y):
     moves = []
     #tmp coords
-    _x, _y = x, y
+    _x, _y = x, y-1
     #generate straight top line
     while _y >= 0:
         # if we hit a piece, stop there
-        if isSameColor(etat.tableau[_y][_x],piece):
-            break
+        if pos_is_in_board(_x, _y):
+            if isSameColor(etat.tableau[_y][_x],piece):
+                break
+            else:
+                moves.append((_x,_y))
         else:
-            moves.append((_x,_y))
-        _y+=1
+            break
+        _y+-1
+        
     return moves
 
 def generate_down_line_moves(etat,piece,x,y):
     moves = []
     #reset coords
-    _x, _y = x, y
+    _x, _y = x, y+1
+
     #generate straight down line
     while _y <= 7:
         # if we hit a piece, stop there
-        if isSameColor(etat.tableau[_y][_x],piece):
-            break
+        if pos_is_in_board(_x, _y):
+            if isSameColor(etat.tableau[_y][_x],piece):
+                break
+            else:
+                moves.append((_x,_y))
         else:
-            moves.append((_x,_y))
-        _y-=1
+            break
+        _y+=1
     return moves
 
 
@@ -43,72 +51,92 @@ def generate_horizontal_line_moves(etat,piece,x,y):
     #reset coords
     _x, _y = x, y
     #generate straight down line
+    _x-=1
     while _x >= 0:
         # if we hit a piece, stop there
-        if isSameColor(etat.tableau[_y][_x],piece):
-            break
+        if pos_is_in_board(_x, _y):
+            if isSameColor(etat.tableau[_y][_x],piece):
+                break
+            else:
+                moves.append((_x,_y))
         else:
-            moves.append((_x,_y))
+            break
         _x-=1
 
         #tmp coords
     _x, _y = x, y
     #generate straight top line
+    _x+=1
     while _y <= 7:
         # if we hit a piece, stop there
-        if isSameColor(etat.tableau[_y][_x],piece):
-            break
+        if pos_is_in_board(_x, _y):
+            if isSameColor(etat.tableau[_y][_x],piece):
+                break
+            else:
+                moves.append((_x,_y))
         else:
-            moves.append((_x,_y))
+            break
         _x+=1
     return moves
 
 def generate_diagonal_line_moves(etat,piece,x,y):
     moves = []
     #reset coords
-    _x, _y = x, y
+    _x, _y = x+1, y+1
     #generate down right diag
     while _y <= 7 and _x <= 7:
         # if we hit a piece, stop there
-        if isSameColor(etat.tableau[_y][_x],piece):
-            break
+        if pos_is_in_board(_x, _y):
+            if isSameColor(etat.tableau[_y][_x],piece):
+                break
+            else:
+                moves.append((_x,_y))
         else:
-            moves.append((_x,_y))
+            break
         _y+=1
         _x+=1
 
-    _x, _y = x, y
+    _x, _y = x-1, y+1
     #generate down left diagonal
     while _y <= 7 and _x >= 0:
         # if we hit a piece, stop there
-        if isSameColor(etat.tableau[_y][_x],piece):
-            break
+        if pos_is_in_board(_x, _y):
+            if isSameColor(etat.tableau[_y][_x],piece):
+                break
+            else:
+                moves.append((_x,_y))
         else:
-            moves.append((_x,_y))
+            break
         _y+=1
         _x-=1
 
     #reset coords
-    _x, _y = x, y
+    _x, _y = x-1, y-1
     #generate top left diagonal
     while _y >= 0 and _x >= 0:
         # if we hit a piece, stop there
-        if isSameColor(etat.tableau[_y][_x],piece):
-            break
+        if pos_is_in_board(_x, _y):
+            if isSameColor(etat.tableau[_y][_x],piece):
+                break
+            else:
+                moves.append((_x,_y))
         else:
-            moves.append((_x,_y))
+            break
         _y-=1
         _x-=1
 
     #reset coords
-    _x, _y = x, y
+    _x, _y = x+1, y-1
     #generate top right idag
     while _y >= 0 and _x <= 7:
         # if we hit a piece, stop there
-        if isSameColor(etat.tableau[_y][_x],piece):
-            break
+        if pos_is_in_board(_x, _y):
+            if isSameColor(etat.tableau[_y][_x],piece):
+                break
+            else:
+                moves.append((_x,_y))
         else:
-            moves.append((_x,_y))
+            break
         _y-=1
         _x+=1
 
@@ -196,5 +224,4 @@ def get_attack_moves_for_piece(etat, piece, x, y):
         moves += generate_knight_attack_moves(etat,piece,x,y)
     if piece == "B" or piece == "b":
         moves += generate_diagonal_line_moves(etat,piece,x,y)
-
     return moves

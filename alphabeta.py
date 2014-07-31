@@ -1,4 +1,4 @@
-MAX_DEPTH = 6
+MAX_DEPTH = 2
 
 def joueur_echec(etat,fct_but,fct_transitions,str_joueur):
    
