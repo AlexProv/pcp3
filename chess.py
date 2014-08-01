@@ -34,34 +34,40 @@ class Jeu:
         self.vainqueur = ''
         return 'Partie nulle'
 
-    def jouer_partie(self, joueur_max, joueur_min):
+    def jouer_partie(self, joueur_max, joueur_min, depth):
         etat = copy.deepcopy(self.etat_initial)
         print etat
         tour = 'B'
         while True:
             # Blanc ###
-            action = joueur_max(copy.deepcopy(etat), self.but, self.transitions, 'B')
+            action = joueur_max(copy.deepcopy(etat), self.but, self.transitions, 'B', depth)
             etat = self.transitions(tour, etat)[action]
-
-            print etat
-            self.resultat = self.but(etat)
+            if 'w' not in etat.tableau:
+                self.checkmate = True
+                self.resultat = "B"
 
             if self.checkmate:
                 print self.resultat_partie()
                 break
+
+
+            print etat
 
             tour = 'B' if tour == 'n' else 'n'
 
 
             # Noir ###
-            action = joueur_min(copy.deepcopy(etat), self.but, self.transitions, 'n')
+            action = joueur_min(copy.deepcopy(etat), self.but, self.transitions, 'n', depth)
             etat = self.transitions(tour, etat)[action]
-            print etat
-            self.resultat = self.but(etat)
+            if 'W' not in etat.tableau:
+                self.checkmate = True
+                self.resultat = "n"
 
             if self.checkmate:
                 print self.resultat_partie()
                 break
+
+            print etat
 
             tour = 'B' if tour == 'n' else 'n'
 
@@ -168,15 +174,15 @@ def chess_but(etat):
             if piece == "p":
                 pts-=1
             if piece == "k":
-                pts-=3  
+                pts-=6  
             if piece == "b":
-                pts-=3    
+                pts-=6  
             if piece == "r":
                 pts-=5
             if piece == "q":
-                pts-=20 
+                pts-=9
             if piece == "w":
-                pts-=1000000
+                pts-=4
 
             if piece == "P":
                 pts+=1
@@ -187,9 +193,9 @@ def chess_but(etat):
             if piece == "R":
                 pts+=5
             if piece == "Q":
-                pts+=20
+                pts+=9
             if piece == "W":
-                pts+=1000000
+                pts+=4
 
     return pts
 
@@ -198,7 +204,7 @@ def main():
 
     # Jouer une partie d`echec
     chess = Jeu(ChessEtat(), chess_but, chess_transitions)
-    chess.jouer_partie(human, alphabeta.joueur_echec)
+    chess.jouer_partie(alphabeta.joueur_echec, alphabeta.joueur_echec, 4)
 
 
 if __name__ == "__main__":

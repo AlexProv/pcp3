@@ -1,3 +1,5 @@
+
+
 # A bunch of utility functions that return a list of possible moves for every piece on the board
 
 
@@ -21,6 +23,9 @@ def generate_top_line_moves(etat,piece,x,y):
                 break
             else:
                 moves.append((_x,_y))
+                if etat.tableau[_y][_x] != "-":
+                    break
+
         else:
             break
         _y-=1
@@ -40,6 +45,8 @@ def generate_down_line_moves(etat,piece,x,y):
                 break
             else:
                 moves.append((_x,_y))
+                if etat.tableau[_y][_x] != "-":
+                    break
         else:
             break
         _y+=1
@@ -59,6 +66,8 @@ def generate_horizontal_line_moves(etat,piece,x,y):
                 break
             else:
                 moves.append((_x,_y))
+                if etat.tableau[_y][_x] != "-":
+                    break
         else:
             break
         _x-=1
@@ -74,6 +83,8 @@ def generate_horizontal_line_moves(etat,piece,x,y):
                 break
             else:
                 moves.append((_x,_y))
+                if etat.tableau[_y][_x] != "-":
+                    break
         else:
             break
         _x+=1
@@ -91,6 +102,8 @@ def generate_diagonal_line_moves(etat,piece,x,y):
                 break
             else:
                 moves.append((_x,_y))
+                if etat.tableau[_y][_x] != "-":
+                    break
         else:
             break
         _y+=1
@@ -105,6 +118,8 @@ def generate_diagonal_line_moves(etat,piece,x,y):
                 break
             else:
                 moves.append((_x,_y))
+                if etat.tableau[_y][_x] != "-":
+                    break
         else:
             break
         _y+=1
@@ -120,6 +135,8 @@ def generate_diagonal_line_moves(etat,piece,x,y):
                 break
             else:
                 moves.append((_x,_y))
+                if etat.tableau[_y][_x] != "-":
+                    break
         else:
             break
         _y-=1
@@ -135,6 +152,8 @@ def generate_diagonal_line_moves(etat,piece,x,y):
                 break
             else:
                 moves.append((_x,_y))
+                if etat.tableau[_y][_x] != "-":
+                    break
         else:
             break
         _y-=1
@@ -174,9 +193,9 @@ def generate_pawn_moves(etat,piece,x,y):
         try:
             if etat.tableau[y-1][x] == "-":
                 moves.append((x,y-1))
-            if etat.tableau[y-1][x+1].isupper():
+            if etat.tableau[y-1][x+1].islower():
                 moves.append((x+1,y-1)) 
-            if etat.tableau[y-1][x-1].isupper():
+            if etat.tableau[y-1][x-1].islower():
                 moves.append((x-1,y-1))
         except IndexError:
             pass
