@@ -1,16 +1,28 @@
 from mpi4py import MPI
-import numpy
+import numpy as np
 import sys
-
-data = {'a':1, 'b':2, 'c':3 }
 
 comm = MPI.COMM_SELF.Spawn(sys.executable,
                            args=['lolprint.py'],
                            maxprocs=5)
 
 
-comm.send(data, dest=2, tag=11)
-size = comm.Get_size()
+data = np.array([['r','k','b','q','w','b','k','r'],
+                     ['p','p','p','p','p','p','p','p'],
+                     ['-','-','-','-','-','-','-','-'],
+                     ['-','-','-','-','-','-','-','-'],
+                     ['-','-','-','-','-','-','-','-'],
+                     ['-','-','-','-','-','-','-','-'],
+                     ['P','P','P','P','P','P','P','P'],
+                     ['R','K','B','Q','W','B','K','R']])
+
+
+
+comm.send(data, dest=1, tag=11)
+ize = comm.Get_size()
 rank = comm.Get_rank()
 
-comm.Disconnect()
+data = comm.recv(source=1,tag=12)
+print data
+
+#comm.Disconnect()
