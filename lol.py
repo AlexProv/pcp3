@@ -1,9 +1,10 @@
 from mpi4py import MPI
 import numpy as np
 import sys
+import chess
 
 comm = MPI.COMM_SELF.Spawn(sys.executable,
-                           args=['lolprint.py'],
+                           args=['slavechild.py'],
                            maxprocs=5)
 
 
@@ -14,15 +15,16 @@ data = np.array([['r','k','b','q','w','b','k','r'],
                      ['-','-','-','-','-','-','-','-'],
                      ['-','-','-','-','-','-','-','-'],
                      ['P','P','P','P','P','P','P','P'],
-                     ['R','K','B','Q','W','B','K','R']])
+                     ['R','K','B','Q','W','B','K','R']]),'B'
+
+data = chess.ChessEtat(),'B'
 
 
+for i in range(5):
+    comm.send(data, dest=i, tag=1)
 
-comm.send(data, dest=1, tag=11)
-ize = comm.Get_size()
-rank = comm.Get_rank()
-
-data = comm.recv(source=1,tag=12)
-print data
-
-#comm.Disconnect()
+while True:
+    data = comm.recv(source=1,tag=1)
+    if data == "done":
+        #comm.Disconnect()
+        break
