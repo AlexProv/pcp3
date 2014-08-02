@@ -20,7 +20,7 @@ MAX_DEPTH = 4
 #         return beta, etat
 
 
-def joueur_echec(etat,fct_but,fct_transitions,str_joueur, depth):
+def joueur_echec(etat,fct_but,fct_transitions,str_joueur, depth=MAX_DEPTH):
 
 
     if str_joueur == "B":
