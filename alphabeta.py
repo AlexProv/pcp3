@@ -1,5 +1,6 @@
+import subprocess
+import json
 MAX_DEPTH = 4
-
 
 # def alphabeta(etat, depth, fct_but, fct_transitions, alpha, beta, str_joueur):
 #     utilite = fct_but(etat)
@@ -21,13 +22,28 @@ MAX_DEPTH = 4
 
 
 def joueur_echec(etat,fct_but,fct_transitions,str_joueur, depth=MAX_DEPTH):
-
-
     if str_joueur == "B":
         _,action = Max_Tour(etat,float("-infinity"),float("infinity"),fct_but,fct_transitions,str_joueur,depth)
     else:
         _,action = Min_Tour(etat,float("-infinity"),float("infinity"),fct_but,fct_transitions,str_joueur,depth)
     return action
+
+def joueur_echec_paralle(etat,fct_but,fct_transitions,str_joueur,depth=MAX_DEPTH):
+    lTransit = fct_transitions(str_joueur,etat).items()
+    
+    #construction de la list 
+    trans = []
+    for action, etat in lTransit:
+        trans.append(etat.tableau.tolist())
+
+    data = json.dumps((trans,str_joueur))
+
+    #process = subprocess.Popen(['python','mpiChess.py'], stdout=subprocess.PIPE)
+    process = subprocess.Popen(['mpirun','-np','10','python','mpiChess.py', data])
+    result = process.communicate()[0]
+    print result
+    quit()
+    return result
 
 #max est joueur utilite, etat
 def Max_Tour(etat,alpha,beta,fct_but,fct_transitions,str_joueur, depth):
@@ -72,12 +88,3 @@ def Min_Tour(etat,alpha,beta,fct_but,fct_transitions,str_joueur, depth):
             return utilite, action
         beta = min(beta,utilite)
     return utilite, action
-
-
-
-def main():
-    print "AA"
-    #a = Max_Tour(etat,alpha,beta,fct_but,fct_transitions,str_joueur)
-
-if __name__ == "__main__":
-    main()

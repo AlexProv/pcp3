@@ -50,11 +50,8 @@ class Jeu:
                 print self.resultat_partie()
                 break
 
-
             print etat
-
             tour = 'B' if tour == 'n' else 'n'
-
 
             # Noir ###
             action = joueur_min(copy.deepcopy(etat), self.but, self.transitions, 'n', depth)
@@ -68,8 +65,8 @@ class Jeu:
                 break
 
             print etat
-
             tour = 'B' if tour == 'n' else 'n'
+            
 
 class ChessEtat:
 
@@ -204,7 +201,7 @@ def main():
 
     # Jouer une partie d`echec
     chess = Jeu(ChessEtat(), chess_but, chess_transitions)
-    chess.jouer_partie(alphabeta.joueur_echec, alphabeta.joueur_echec, 4)
+    chess.jouer_partie(alphabeta.joueur_echec_paralle, alphabeta.joueur_echec, 4)
 
 
 if __name__ == "__main__":
